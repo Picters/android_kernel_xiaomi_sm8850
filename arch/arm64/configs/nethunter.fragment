@@ -157,17 +157,21 @@ CONFIG_USB_CONFIGFS_MASS_STORAGE=y
 CONFIG_USB_CONFIGFS_F_HID=y
 
 # --- Netfilter / bridged MITM (ettercap/bettercap/responder/rogue-AP) --------
-# NOTE: MASQUERADE/REDIRECT/ARPTABLES/ARPFILTER/ARP_MANGLE are already =y builtin
-# in gki_defconfig -- deliberately NOT re-declared here to avoid a =y->=m
-# downgrade. Only the genuinely-missing bridged-MITM pieces are added below.
-CONFIG_NF_TABLES=m
-CONFIG_NF_TABLES_INET=y
-CONFIG_NFT_COMPAT=m
-CONFIG_BRIDGE_NETFILTER=m
-CONFIG_BRIDGE_NF_EBTABLES=m
-CONFIG_BRIDGE_EBT_BROUTE=m
-CONFIG_BRIDGE_EBT_T_FILTER=m
-CONFIG_BRIDGE_EBT_T_NAT=m
+# REMOVED 2026-07-12 — KMI BREAKER, root cause of the Mi17 bootloop.
+# CONFIG_NF_TABLES adds `struct netns_nftables nft` to `struct net`
+# (include/net/net_namespace.h:148). genksyms expands struct net through every
+# net_device*/sock*/sk_buff pointer, so this shifts the CRC of ~1194 core net
+# symbols (__alloc_skb, alloc_netdev_mqs, register_netdevice, netif_rx, ...)
+# WITHOUT touching module_layout (stays 0xe976b219 -> CI KMI-CHECK falsely PASS).
+# Stock vendor net modules (rmnet_core + deps, qca_cld3) then fail MODVERSIONS
+# and the phone bootloops with no vibration. nftables/ebtables-based bridged
+# MITM is therefore NOT possible in-tree on this locked-KMI device; if needed it
+# must be built out-of-tree against the stock KMI. Wi-Fi injection is unaffected
+# (cfg80211/mac80211 are =m and net_device's wifi ptr is unconditional).
+# Do NOT re-enable any of these without a full-symvers gate proving zero net-CRC drift:
+# CONFIG_NF_TABLES / CONFIG_NF_TABLES_INET / CONFIG_NFT_COMPAT
+# CONFIG_BRIDGE_NETFILTER / CONFIG_BRIDGE_NF_EBTABLES
+# CONFIG_BRIDGE_EBT_BROUTE / CONFIG_BRIDGE_EBT_T_FILTER / CONFIG_BRIDGE_EBT_T_NAT
 
 # --- NFS (client + server for pivoting / loot) -------------------------------
 # Built =y (not =m): on GKI the VFS helper symbols (d_drop, dget_parent, mntget,
