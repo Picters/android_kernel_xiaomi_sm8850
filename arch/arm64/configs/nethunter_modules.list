@@ -1,0 +1,121 @@
+# NetHunter module packaging whitelist (basenames, no .ko suffix).
+# The CI packages ONLY these modules from modules_install into the AnyKernel3
+# systemless payload, so stock vendor/GKI modules are never overwritten
+# (avoids MODVERSIONS conflicts). Names not produced by the build are ignored;
+# the full built-module list is uploaded as an artifact for auditing/refinement.
+# One basename per line; blank lines and # comments ignored.
+
+# --- wireless core ---
+cfg80211
+mac80211
+
+# --- Atheros ---
+ath
+ath9k_hw
+ath9k_common
+ath9k_htc
+carl9170
+ath6kl_core
+ath6kl_usb
+
+# --- MediaTek ---
+mt7601u
+
+# --- Ralink / rt2x00 ---
+rt2x00lib
+rt2x00usb
+rt2500usb
+rt73usb
+rt2800lib
+rt2800usb
+
+# --- Realtek (in-tree) ---
+rtl8187
+rtl_usb
+rtlwifi
+rtl8192c-common
+rtl8192cu
+rtl8xxxu
+rt6352
+
+# --- ZyDAS ---
+zd1201
+zd1211rw
+rndis_wlan
+
+# --- Bluetooth ---
+btusb
+btbcm
+btrtl
+btintel
+hci_uart
+bcm203x
+bpa10x
+bfusb
+hci_vhci
+rfcomm
+bnep
+hidp
+
+# --- USB Ethernet ---
+rtl8150
+r8152
+cdc_ether
+cdc_subset
+rndis_host
+
+# --- USB serial ---
+usbserial
+ch341
+cp210x
+ftdi_sio
+pl2303
+
+# --- CAN / CARsenal ---
+can
+can-raw
+can-bcm
+can-gw
+can-dev
+vcan
+slcan
+hi311x
+mcp251x
+ems_usb
+esd_usb
+gs_usb
+kvaser_usb
+peak_usb
+usb_8dev
+netlink_diag
+
+# --- SDR / DVB ---
+dvb-core
+dvb_usb_v2
+dvb_usb_rtl28xxu
+rtl2830
+rtl2832
+rtl2832_sdr
+si2168
+zd1301_demod
+
+# --- Netfilter / bridged MITM ---
+nf_tables
+nft_compat
+br_netfilter
+ebtables
+ebtable_broute
+ebtable_filter
+ebtable_nat
+
+# --- NFS ---
+nfs
+nfsv3
+nfsv4
+nfsd
+lockd
+sunrpc
+grace
+
+# --- Filesystems ---
+ntfs3

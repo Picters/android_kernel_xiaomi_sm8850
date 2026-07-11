@@ -1,0 +1,176 @@
+# =============================================================================
+# Kali NetHunter config fragment for Xiaomi 17 (sm8850) GKI 2.0 / android16-6.12
+# -----------------------------------------------------------------------------
+# Layered ON TOP of gki_defconfig via merge_config.sh; gki_defconfig itself is
+# left untouched so the frozen GKI KMI baseline is preserved and rollback is a
+# one-line change.
+#
+# KMI-SAFETY RULES (see memory: sysvipc_rustbinder_bootloop / nh_safe_kmi):
+#   * Only add =m leaf drivers, or =y subsystem toggles that do NOT alter a
+#     frozen core struct (task_struct / mm_struct / net_device / sk_buff ...).
+#   * NEVER enable CONFIG_SYSVIPC here: it grows task_struct -> module_layout
+#     shift -> stock vendor modules fail MODVERSIONS -> fleet bootloop.
+#   * Wireless-core fields in struct net_device are unconditional in GKI, so
+#     CFG80211/MAC80211/WEXT as =m do NOT change net_device -> KMI stays stable.
+#   * SuSFS is applied separately by the CI overlay; do NOT touch KSU/SuSFS here.
+# The produced .config MUST be gated by a vmlinux.symvers diff vs stock before
+# flashing (module_layout must stay 0xe976b219).
+# =============================================================================
+
+# --- General / module policy -------------------------------------------------
+# Allow unsigned out-of-tree adapter modules to load (KMI symbols only).
+# SIG_FORCE stays off, so this only stops build-time auto-signing; no struct change.
+# CONFIG_MODULE_SIG_ALL is not set
+CONFIG_MODULE_FORCE_UNLOAD=y
+
+# --- Wireless core (external USB adapters) -----------------------------------
+CONFIG_CFG80211=m
+CONFIG_CFG80211_WEXT=y
+CONFIG_CFG80211_CRDA_SUPPORT=y
+CONFIG_MAC80211=m
+CONFIG_MAC80211_MESH=y
+CONFIG_MAC80211_RC_MINSTREL=y
+CONFIG_WLAN=y
+CONFIG_WLAN_VENDOR_ATH=y
+CONFIG_ATH_COMMON=m
+CONFIG_ATH9K_HW=m
+CONFIG_ATH9K_COMMON=m
+CONFIG_ATH9K_HTC=m
+CONFIG_CARL9170=m
+CONFIG_ATH6KL=m
+CONFIG_ATH6KL_USB=m
+CONFIG_WLAN_VENDOR_ATMEL=y
+CONFIG_WLAN_VENDOR_MEDIATEK=y
+CONFIG_MT7601U=m
+CONFIG_WLAN_VENDOR_RALINK=y
+CONFIG_RT2X00=m
+CONFIG_RT2500USB=m
+CONFIG_RT73USB=m
+CONFIG_RT2800USB=m
+CONFIG_RT2800USB_RT33XX=y
+CONFIG_RT2800USB_RT35XX=y
+CONFIG_RT2800USB_RT3573=y
+CONFIG_RT2800USB_RT53XX=y
+CONFIG_RT2800USB_RT55XX=y
+CONFIG_RT2800USB_UNKNOWN=y
+CONFIG_WLAN_VENDOR_REALTEK=y
+CONFIG_RTL8187=m
+CONFIG_RTL_CARDS=m
+CONFIG_RTL8192CU=m
+CONFIG_RTL8XXXU=m
+CONFIG_RTL8XXXU_UNTESTED=y
+CONFIG_WLAN_VENDOR_ZYDAS=y
+CONFIG_USB_ZD1201=m
+CONFIG_ZD1211RW=m
+CONFIG_USB_NET_RNDIS_WLAN=m
+
+# --- Out-of-tree Realtek injection adapters (aircrack-ng sources) ------------
+# Added in a second layer via git submodules + Kconfig wiring (RTL8812AU/8814AU
+# chips have no in-tree driver on 6.12). Symbols intentionally NOT set here yet;
+# the in-tree rtl8xxxu / rt2x00 / ath9k_htc above already cover the common
+# injection adapters and support native mac80211 injection on 6.x.
+
+# --- Bluetooth (BT Arsenal adapters) -----------------------------------------
+CONFIG_BT=m
+CONFIG_BT_HCIBTUSB=m
+CONFIG_BT_HCIBTUSB_BCM=y
+CONFIG_BT_HCIBTUSB_RTL=y
+CONFIG_BT_HCIUART=m
+CONFIG_BT_HCIUART_H4=y
+CONFIG_BT_HCIBCM203X=m
+CONFIG_BT_HCIBPA10X=m
+CONFIG_BT_HCIBFUSB=m
+CONFIG_BT_HCIVHCI=m
+CONFIG_BT_RFCOMM=m
+CONFIG_BT_RFCOMM_TTY=y
+CONFIG_BT_BNEP=m
+CONFIG_BT_BNEP_MC_FILTER=y
+CONFIG_BT_BNEP_PROTO_FILTER=y
+CONFIG_BT_HIDP=m
+
+# --- USB Ethernet adapters ---------------------------------------------------
+CONFIG_USB_RTL8150=m
+CONFIG_USB_RTL8152=m
+CONFIG_USB_NET_CDCETHER=m
+CONFIG_USB_NET_CDC_SUBSET=m
+CONFIG_USB_NET_RNDIS_HOST=m
+
+# --- USB serial converters (CAN/serial attacks, Proxmark, CH341/FTDI) --------
+CONFIG_USB_SERIAL=m
+CONFIG_USB_SERIAL_GENERIC=y
+CONFIG_USB_SERIAL_CH341=m
+CONFIG_USB_SERIAL_CP210X=m
+CONFIG_USB_SERIAL_FTDI_SIO=m
+CONFIG_USB_SERIAL_PL2303=m
+CONFIG_USB_ACM=m
+
+# --- CAN / CARsenal ----------------------------------------------------------
+CONFIG_CAN=m
+CONFIG_CAN_RAW=m
+CONFIG_CAN_BCM=m
+CONFIG_CAN_GW=m
+CONFIG_CAN_DEV=m
+CONFIG_CAN_VCAN=m
+CONFIG_CAN_SLCAN=m
+CONFIG_CAN_HI311X=m
+CONFIG_CAN_MCP251X=m
+CONFIG_CAN_EMS_USB=m
+CONFIG_CAN_ESD_USB=m
+CONFIG_CAN_GS_USB=m
+CONFIG_CAN_KVASER_USB=m
+CONFIG_CAN_PEAK_USB=m
+CONFIG_CAN_8DEV_USB=m
+CONFIG_NETLINK_DIAG=m
+
+# --- SDR (RF Analyzer, rtl-sdr) ----------------------------------------------
+CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
+CONFIG_MEDIA_SDR_SUPPORT=y
+CONFIG_DVB_CORE=m
+CONFIG_DVB_USB_V2=m
+CONFIG_DVB_USB_RTL28XXU=m
+CONFIG_DVB_RTL2830=m
+CONFIG_DVB_RTL2832=m
+CONFIG_DVB_RTL2832_SDR=m
+CONFIG_DVB_SI2168=m
+CONFIG_DVB_ZD1301_DEMOD=m
+CONFIG_MEDIA_USB_SUPPORT=y
+
+# --- USB gadget ConfigFS functions (HID/BadUSB/USB-Arsenal) ------------------
+CONFIG_USB_CONFIGFS_SERIAL=y
+CONFIG_USB_CONFIGFS_ACM=y
+CONFIG_USB_CONFIGFS_OBEX=y
+CONFIG_USB_CONFIGFS_NCM=y
+CONFIG_USB_CONFIGFS_ECM=y
+CONFIG_USB_CONFIGFS_ECM_SUBSET=y
+CONFIG_USB_CONFIGFS_RNDIS=y
+CONFIG_USB_CONFIGFS_EEM=y
+CONFIG_USB_CONFIGFS_MASS_STORAGE=y
+CONFIG_USB_CONFIGFS_F_HID=y
+
+# --- Netfilter / bridged MITM (ettercap/bettercap/responder/rogue-AP) --------
+# NOTE: MASQUERADE/REDIRECT/ARPTABLES/ARPFILTER/ARP_MANGLE are already =y builtin
+# in gki_defconfig -- deliberately NOT re-declared here to avoid a =y->=m
+# downgrade. Only the genuinely-missing bridged-MITM pieces are added below.
+CONFIG_NF_TABLES=m
+CONFIG_NF_TABLES_INET=y
+CONFIG_NFT_COMPAT=m
+CONFIG_BRIDGE_NETFILTER=m
+CONFIG_BRIDGE_NF_EBTABLES=m
+CONFIG_BRIDGE_EBT_BROUTE=m
+CONFIG_BRIDGE_EBT_T_FILTER=m
+CONFIG_BRIDGE_EBT_T_NAT=m
+
+# --- NFS (client + server for pivoting / loot) -------------------------------
+CONFIG_NETWORK_FILESYSTEMS=y
+CONFIG_NFS_FS=m
+CONFIG_NFS_V3=y
+CONFIG_NFS_V3_ACL=y
+CONFIG_NFS_V4=y
+CONFIG_NFSD=m
+CONFIG_NFSD_V3_ACL=y
+CONFIG_NFSD_V4=y
+
+# --- Filesystems (loot drives) -----------------------------------------------
+CONFIG_NTFS3_FS=m
+CONFIG_NTFS3_LZX_XPRESS=y
+CONFIG_NTFS3_FS_POSIX_ACL=y
