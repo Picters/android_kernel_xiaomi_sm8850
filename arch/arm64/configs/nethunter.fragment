@@ -28,7 +28,14 @@ CONFIG_CFG80211=m
 CONFIG_CFG80211_WEXT=y
 CONFIG_CFG80211_CRDA_SUPPORT=y
 CONFIG_MAC80211=m
-CONFIG_MAC80211_MESH=y
+# CONFIG_MAC80211_MESH removed 2026-07-12 — KMI BREAKER (2nd Mi17 bootloop cause).
+# With CONFIG_WLAN=y, enabling MAC80211_MESH flips LL_MAX_HEADER 96->128
+# (include/linux/netdevice.h:161), which resizes struct hh_cache.hh_data[]
+# (netdevice.h:290). hh_cache is reachable from net_device/neighbour/dst, so
+# genksyms shifts ~2500 core net symbol CRCs (__alloc_skb, register_netdevice,
+# __dev_queue_xmit, ...) -> stock vendor net modules fail MODVERSIONS -> bootloop.
+# module_layout stays 0xe976b219 so the CI check misses it. WLAN=y alone matches
+# stock (LL_MAX_HEADER=96); only MESH breaks it. Mesh is not needed for injection.
 CONFIG_MAC80211_RC_MINSTREL=y
 CONFIG_WLAN=y
 CONFIG_WLAN_VENDOR_ATH=y
