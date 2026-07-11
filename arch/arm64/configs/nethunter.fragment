@@ -161,12 +161,18 @@ CONFIG_BRIDGE_EBT_T_FILTER=m
 CONFIG_BRIDGE_EBT_T_NAT=m
 
 # --- NFS (client + server for pivoting / loot) -------------------------------
+# Built =y (not =m): on GKI the VFS helper symbols (d_drop, dget_parent, mntget,
+# override_creds ...) live in the restricted namespace
+# VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver, and NFS-as-module
+# fails modpost ("does not import it"). Builtin avoids the namespace check and
+# stays KMI-safe (adds only NFS's own symbols to vmlinux; no vendor-consumed
+# struct/CRC changes). Cost is a slightly larger Image.
 CONFIG_NETWORK_FILESYSTEMS=y
-CONFIG_NFS_FS=m
+CONFIG_NFS_FS=y
 CONFIG_NFS_V3=y
 CONFIG_NFS_V3_ACL=y
 CONFIG_NFS_V4=y
-CONFIG_NFSD=m
+CONFIG_NFSD=y
 CONFIG_NFSD_V3_ACL=y
 CONFIG_NFSD_V4=y
 

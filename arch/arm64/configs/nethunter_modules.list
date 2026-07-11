@@ -108,14 +108,7 @@ ebtable_broute
 ebtable_filter
 ebtable_nat
 
-# --- NFS ---
-nfs
-nfsv3
-nfsv4
-nfsd
-lockd
-sunrpc
-grace
+# --- NFS is built =y (builtin), so no .ko is shipped for it ---
 
 # --- Filesystems ---
 ntfs3
