@@ -89,7 +89,10 @@ peak_usb
 usb_8dev
 netlink_diag
 
-# --- SDR / DVB ---
+# --- SDR / DVB (videodev/mc intentionally NOT shipped: camera V4L2 framework
+#     is already present on-device; shipping ours could clash with the stock
+#     camera stack) ---
+i2c-mux
 dvb-core
 dvb_usb_v2
 dvb_usb_rtl28xxu
@@ -98,6 +101,10 @@ rtl2832
 rtl2832_sdr
 si2168
 zd1301_demod
+r820t
+e4000
+fc0012
+fc0013
 
 # --- Netfilter / bridged MITM ---
 nf_tables
