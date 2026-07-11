@@ -36,12 +36,9 @@ rtlwifi
 rtl8192c-common
 rtl8192cu
 rtl8xxxu
-rt6352
 
 # --- ZyDAS ---
-zd1201
 zd1211rw
-rndis_wlan
 
 # --- Bluetooth ---
 btusb
@@ -95,7 +92,7 @@ netlink_diag
 i2c-mux
 dvb-core
 dvb_usb_v2
-dvb_usb_rtl28xxu
+dvb-usb-rtl28xxu
 rtl2830
 rtl2832
 rtl2832_sdr
@@ -103,6 +100,7 @@ si2168
 zd1301_demod
 r820t
 e4000
+fc0011
 fc0012
 fc0013
 
