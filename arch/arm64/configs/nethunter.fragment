@@ -135,7 +135,17 @@ CONFIG_NETLINK_DIAG=m
 # rtl-sdr chain (RTL2832 + R820T/E4000/FC001x tuners) explicitly.
 CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
 CONFIG_MEDIA_SDR_SUPPORT=y
-CONFIG_VIDEO_DEV=m
+# VIDEO_DEV MUST stay =y (matches stock gki_defconfig). The Qualcomm vendor
+# camera.ko and rtc6226 FM modules import v4l2 core symbols (v4l2_event_queue,
+# __video_register_device, v4l2_subdev_init, v4l2_device_register, ...) and there
+# is NO videodev.ko in /vendor_dlkm (0 refs in vendor modules.dep) — stock ships
+# V4L2 core built-in. Building it =m produced a videodev.ko that nothing loads at
+# boot, so camera.ko failed with "Unknown symbol ... (err -2)" => camera +
+# flashlight + FM radio all dead on the Mi17 (confirmed via on-device dmesg
+# 2026-07-12). =y still satisfies the =m rtl-sdr/DVB USB modules below (they link
+# against the built-in core) and is KMI-safe (only ADDS exports; no struct/CRC
+# change, module_layout unaffected).
+CONFIG_VIDEO_DEV=y
 CONFIG_I2C_MUX=m
 CONFIG_DVB_CORE=m
 CONFIG_DVB_USB_V2=m
@@ -158,7 +168,21 @@ CONFIG_USB_CONFIGFS_OBEX=y
 CONFIG_USB_CONFIGFS_NCM=y
 CONFIG_USB_CONFIGFS_ECM=y
 CONFIG_USB_CONFIGFS_ECM_SUBSET=y
-CONFIG_USB_CONFIGFS_RNDIS=y
+# CONFIG_USB_CONFIGFS_RNDIS is DELIBERATELY off (matches stock; do NOT re-enable).
+# It selects USB_F_RNDIS=y, which compiles mainline rndis.o INTO vmlinux and
+# exports 14 rndis_* symbols (rndis_add_hdr, rndis_msg_parser, rndis_register,
+# rndis_uninit, ...). The Qualcomm vendor usb_f_gsi.ko exports those SAME 14
+# names, so it then fails to load with:
+#   "usb_f_gsi: exports duplicate symbol rndis_add_hdr (owned by kernel)" (-EEXIST)
+# usb_f_gsi is a hard dependency of ipam.ko, the root of the entire cellular+Wi-Fi
+# datapath. With ipam absent: rmnet_core/rmnet_* never load (mobile data dead),
+# the modem IPA handshake never completes (mss remoteproc watchdog crash-loops
+# ~every 67s), and qca_cld3 wifi fails on ipa_wdi_* (internal Wi-Fi HAL dead).
+# Verified on-device 2026-07-12: usb_f_gsi's ONLY vmlinux-symbol collisions are
+# those 14 rndis_* names — disabling this clears every one and the vendor module
+# cleanly owns "rndis". NetHunter loses nothing: the RNDIS USB gadget function is
+# still provided by usb_f_gsi (exactly as stock), and BadUSB/HID is F_HID below.
+# CONFIG_USB_CONFIGFS_RNDIS is not set
 CONFIG_USB_CONFIGFS_EEM=y
 CONFIG_USB_CONFIGFS_MASS_STORAGE=y
 CONFIG_USB_CONFIGFS_F_HID=y
