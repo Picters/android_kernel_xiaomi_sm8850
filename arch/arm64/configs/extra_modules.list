@@ -1,4 +1,4 @@
-# NetHunter module packaging whitelist (basenames, no .ko suffix).
+# Extra-modules packaging whitelist (basenames, no .ko suffix).
 # The CI packages ONLY these modules from modules_install into the AnyKernel3
 # systemless payload, so stock vendor/GKI modules are never overwritten
 # (avoids MODVERSIONS conflicts). Names not produced by the build are ignored;

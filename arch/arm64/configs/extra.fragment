@@ -1,5 +1,5 @@
 # =============================================================================
-# Kali NetHunter config fragment for Xiaomi 17 (sm8850) GKI 2.0 / android16-6.12
+# Extra-modules config fragment for Xiaomi 17 (sm8850) GKI 2.0 / android16-6.12
 # -----------------------------------------------------------------------------
 # Layered ON TOP of gki_defconfig via merge_config.sh; gki_defconfig itself is
 # left untouched so the frozen GKI KMI baseline is preserved and rollback is a
@@ -131,7 +131,7 @@ CONFIG_NETLINK_DIAG=m
 
 # --- SDR (RF Analyzer, rtl-sdr) ----------------------------------------------
 # RTL28XXU needs I2C_MUX; RTL2832_SDR needs VIDEO_DEV. With MEDIA_SUBDRV_AUTOSELECT
-# off (Kali guidance) the demods/tuners are NOT auto-pulled, so enable the
+# off (deliberately) the demods/tuners are NOT auto-pulled, so enable the
 # rtl-sdr chain (RTL2832 + R820T/E4000/FC001x tuners) explicitly.
 CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
 CONFIG_MEDIA_SDR_SUPPORT=y
@@ -180,7 +180,7 @@ CONFIG_USB_CONFIGFS_ECM_SUBSET=y
 # ~every 67s), and qca_cld3 wifi fails on ipa_wdi_* (internal Wi-Fi HAL dead).
 # Verified on-device 2026-07-12: usb_f_gsi's ONLY vmlinux-symbol collisions are
 # those 14 rndis_* names — disabling this clears every one and the vendor module
-# cleanly owns "rndis". NetHunter loses nothing: the RNDIS USB gadget function is
+# cleanly owns "rndis". Nothing is lost here: the RNDIS USB gadget function is
 # still provided by usb_f_gsi (exactly as stock), and BadUSB/HID is F_HID below.
 # CONFIG_USB_CONFIGFS_RNDIS is not set
 CONFIG_USB_CONFIGFS_EEM=y
