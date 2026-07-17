@@ -45,9 +45,7 @@ Every injection / adapter driver is compiled against this kernel and shipped as 
    (*Flash AnyKernel3 zip*), then reboot.
 2. **Install the drivers** — install the matching **`…-OOT-Modules-….zip`** from the same
    release via your manager (*Modules → Install from storage*) and reboot. This delivers
-   the injection / BT / CAN / SDR / NTFS drivers to `/system/lib/modules` and is
-   **manager-agnostic** (works on any KernelSU-family or Magisk manager, regardless of the
-   manager's package name).
+   the injection / BT / CAN / SDR / NTFS drivers to `/system/lib/modules`.
 
 ## Wi-Fi injection — Picters Manager
 
