@@ -26,11 +26,17 @@ rt2x00lib
 rt2x00usb
 rt2500usb
 rt73usb
+# rt73usb selects CRC_ITU_T, which ships as its own module; without it
+# rt73usb fails to load (unresolved crc_itu_t). Ignored if built-in.
+crc-itu-t
 rt2800lib
 rt2800usb
 
 # --- Realtek (in-tree) ---
 rtl8187
+# rtl8187 selects EEPROM_93CX6; without eeprom_93cx6.ko packaged, rtl8187
+# fails to load (unresolved eeprom_93cx6_read/_multiread). Ignored if built-in.
+eeprom_93cx6
 rtl_usb
 rtlwifi
 rtl8192c-common
