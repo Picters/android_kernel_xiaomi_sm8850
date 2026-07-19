@@ -19,7 +19,7 @@ Picters Kernel extends the stock Android 16 kernel with proper support for exter
 - **External Wi-Fi adapters.** Realtek RTL8812AU / 8812BU / 8814AU / 8188EUS adapters work out of the box — for packet injection and monitor mode, and as a standard managed station inside stock Xiaomi Settings.
 - **Bundled drivers.** Realtek Wi-Fi (aircrack-ng and morrownr), CAN bus, DVB-T / RTL-SDR and USB-serial are built in — no manual compilation required.
 - **Root.** ReSukiSU (KernelSU) with SUSFS.
-- **Companion app.** *Picters Modules Manager* ships with the kernel: switch Wi-Fi between Stock and Inject, hand an adapter back to Android, and keep the kernel, modules and app up to date.
+- **Companion app.** *Picters Modules Manager* ships with the kernel: switch Wi-Fi between Stock and Inject live (no reboot), hand an adapter back to Android, and keep the kernel, modules and app up to date.
 
 <div align="center">
 <img src="assets/manager.jpg" width="43%" alt="Picters Modules Manager with two adapters loaded">
@@ -37,7 +37,8 @@ Picters Kernel extends the stock Android 16 kernel with proper support for exter
    - `Mi17_Kernel-…zip` — the kernel (AnyKernel3).
    - `…OOT-Modules…zip` — the drivers and the companion app.
 2. Flash both in KernelSU or Magisk (or through the companion app), then reboot.
-3. Open Picters Modules Manager, set Wi-Fi to **Inject**, and connect an adapter.
+3. The manager ships as a **system app** — enable **Show system apps** in your KernelSU/Magisk manager to find *Picters Modules Manager* and grant it root.
+4. Open it, set Wi-Fi to **Inject**, and connect an adapter.
 
 > 💡 The companion app can update the kernel, the modules and itself in a single step, with an A/B slot selector.
 
