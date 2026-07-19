@@ -1,38 +1,60 @@
-# Xiaomi 17 Series — Picters Kernel
+<div align="center">
 
-A custom kernel for the **Xiaomi 17 Series** (`sm8850`, codename *pudding*), forked from the
-Kokuban kernel for Android 16 / GKI 2.0 (Linux 6.12). It adds a set of extra out-of-tree modules
-(Wi-Fi injection & monitor-mode adapters, Bluetooth, USB gadget/HID, SDR/DVB, CAN, USB serial,
-NTFS/NFS) while staying **KMI-safe** — it boots on the stock vendor image with camera, mobile
-data and internal Wi-Fi all working. Root is **ReSukiSU** + **SuSFS**.
+<img src="assets/logo.jpg" alt="Picters kernel" width="640">
 
-## Branches
+# Picters Kernel — Xiaomi SM8850
 
-| Branch | Kernel |
-| :-- | :-- |
-| **`main`** | Stock — clean baseline, no extra modules |
-| **`resukisu`** | The full extra-modules feature set + ReSukiSU root |
+A custom Android 16 kernel for the Xiaomi Mi 17 (sm8850, "Pudding"), focused on first-class support for external USB Wi-Fi. 📡
 
-Build/flash **`resukisu`**.
+`6.12.23-android16` &nbsp;•&nbsp; ReSukiSU (KernelSU) &nbsp;•&nbsp; SUSFS &nbsp;•&nbsp; out-of-tree USB Wi-Fi
 
-## Install
+</div>
 
-1. **Flash the kernel** — flash `Mi17_Kernel-…-ReSuki-…-susfs-….zip` from the latest release with
-   your KernelSU/Magisk manager (*Flash AnyKernel3 zip*), then reboot.
-2. **Install the drivers** — install the matching `…-OOT-Modules-….zip` (**Modules pack**) from the
-   same release (*Modules → Install from storage*) and reboot. Non-Wi-Fi drivers load at boot.
+---
 
-## Wi-Fi: Stock ↔ Inject
+## Overview
 
-Internal Wi-Fi (Qualcomm `qca_cld3`) and the external injection adapters use different `cfg80211`
-builds and can't run together, so you switch between them from the **Picters Modules Manager** app
-(shipped in the Modules pack, opened from its Action button):
+Picters Kernel extends the stock Android 16 kernel with proper support for external USB Wi-Fi adapters and a set of common out-of-tree drivers, all managed from a dedicated companion app.
 
-- **Inject** — instant. Unloads the vendor Wi-Fi stack, loads the kernel `cfg80211` + adapter
-  drivers. Internal Wi-Fi turns off; plug a USB adapter and `iw dev` shows `wlanN`.
-- **Stock** — requires a reboot (the Qualcomm Wi-Fi firmware only initialises at boot).
+- **External Wi-Fi adapters.** Realtek RTL8812AU / 8812BU / 8814AU / 8188EUS adapters work out of the box — for packet injection and monitor mode, and as a standard managed station inside stock Xiaomi Settings.
+- **Bundled drivers.** Realtek Wi-Fi (aircrack-ng and morrownr), CAN bus, DVB-T / RTL-SDR and USB-serial are built in — no manual compilation required.
+- **Root.** ReSukiSU (KernelSU) with SUSFS.
+- **Companion app.** *Picters Modules Manager* ships with the kernel: switch Wi-Fi between Stock and Inject, hand an adapter back to Android, and keep the kernel, modules and app up to date.
+
+<div align="center">
+<img src="assets/manager.jpg" width="43%" alt="Picters Modules Manager with two adapters loaded">
+&nbsp;&nbsp;
+<img src="assets/iwdev.jpg" width="43%" alt="Two adapters in monitor mode via iw dev">
+<br>
+<sub>Left: the manager app with two adapters loaded. Right: both adapters in monitor mode on this kernel.</sub>
+</div>
+
+---
+
+## Installation
+
+1. Download the latest build from the [Releases](../../releases) page. Each build ships two archives:
+   - `Mi17_Kernel-…zip` — the kernel (AnyKernel3).
+   - `…OOT-Modules…zip` — the drivers and the companion app.
+2. Flash both in KernelSU or Magisk (or through the companion app), then reboot.
+3. Open Picters Modules Manager, set Wi-Fi to **Inject**, and connect an adapter.
+
+> 💡 The companion app can update the kernel, the modules and itself in a single step, with an A/B slot selector.
+
+---
+
+## Details
+
+| | |
+|---|---|
+| **Base** | Android 16 GKI · Linux 6.12.23 · Xiaomi sm8850 |
+| **Root** | ReSukiSU (KernelSU) + SUSFS |
+| **Wi-Fi injection** | `88XXau` (RTL8812AU), `88x2bu` (RTL8812BU), `8814au`, `8188eus` — patched for Linux 6.12 (no UBSAN panics, correct cfg80211 hand-off) |
+| **Additional drivers** | CAN, DVB-T / RTL-SDR, USB-serial (CP210x / CH341 / FTDI / PL2303) |
+| **Build** | Continuous integration; each release is version-stamped for in-app updates |
+
+---
 
 ## Credits
 
-Base kernel: **Kokuban / YuzakiKokuban** · Root: **ReSukiSU / KernelSU** · SuSFS: **simonpunk** ·
-Injection drivers: **aircrack-ng**, **morrownr**.
+ReSukiSU / KernelSU · SUSFS · [aircrack-ng](https://github.com/aircrack-ng/rtl8812au) · [morrownr](https://github.com/morrownr) · AnyKernel3 (osm0sis) · [YuzakiKokuban](https://github.com/YuzakiKokuban) for the build tooling.
