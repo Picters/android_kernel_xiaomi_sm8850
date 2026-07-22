@@ -17,6 +17,7 @@ A custom Android 16 kernel for the Xiaomi Mi 17 (sm8850, "Pudding"), focused on 
 Picters Kernel extends the stock Android 16 kernel with proper support for external USB Wi-Fi adapters and a set of common out-of-tree drivers, all managed from a dedicated companion app.
 
 - **External Wi-Fi adapters.** Realtek RTL8812AU / 8812BU / 8814AU / 8188EUS adapters work out of the box — for packet injection and monitor mode, and as a standard managed station inside stock Xiaomi Settings.
+- **Per-adapter control.** Tap a connected adapter in the app to switch it between **monitor** and **managed** mode, bring it **up / down**, and set its **tx power** — with a safe, recommended value per chipset (capped at the chip's physical limit). No `iw` commands needed.
 - **Bundled drivers.** Realtek Wi-Fi (aircrack-ng and morrownr), CAN bus, DVB-T / RTL-SDR and USB-serial are built in — no manual compilation required.
 - **Root.** ReSukiSU (KernelSU) with SUSFS.
 - **Companion app.** *Picters Modules Manager* ships with the kernel: switch Wi-Fi between Stock and Inject live (no reboot), hand an adapter back to Android, and keep the kernel, modules and app up to date.
