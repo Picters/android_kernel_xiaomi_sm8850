@@ -71,6 +71,26 @@ CONFIG_USB_ZD1201=m
 CONFIG_ZD1211RW=m
 CONFIG_USB_NET_RNDIS_WLAN=m
 
+# --- Regulatory DB: accept an unsigned regulatory.db -------------------------
+# The stock config ships CFG80211_REQUIRE_SIGNED_REGDB=y, which makes cfg80211
+# reject any regulatory.db whose detached PKCS#7 signature its built-in keyring
+# won't verify. On this build that verify fails even for the official, correctly
+# signed wireless-regdb (confirmed on-device: "loaded regulatory.db is malformed
+# or signature is missing/invalid", while openssl validates the same sig against
+# the same embedded cert) — so NO regdb ever loads and `iw reg set <cc>` silently
+# stays at world ("00"). That blocks unlocking tx-power / extra channels on
+# external USB adapters (the whole point of the injection kernel).
+# EXPERT=y (gki_defconfig:254) makes CERTIFICATION_ONUS selectable, which in turn
+# makes REQUIRE_SIGNED_REGDB overridable; turning it off makes
+# regdb_has_valid_signature() a no-op (net/wireless/reg.c) so a plain
+# regulatory.db loads. CFG80211_USE_KERNEL_REGDB_KEYS depends on the signed path,
+# so it drops out with it.
+# KMI-SAFE: all three symbols only gate code compiled INTO cfg80211.ko (=m) — the
+# keyring alloc + verify_pkcs7_signature call. No core struct, no exported-symbol
+# CRC, no net_device change; module_layout stays 0xe976b219.
+CONFIG_CFG80211_CERTIFICATION_ONUS=y
+# CONFIG_CFG80211_REQUIRE_SIGNED_REGDB is not set
+
 # --- Out-of-tree Realtek injection adapters (aircrack-ng sources) ------------
 # Added in a second layer via git submodules + Kconfig wiring (RTL8812AU/8814AU
 # chips have no in-tree driver on 6.12). Symbols intentionally NOT set here yet;
