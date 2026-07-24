@@ -60,5 +60,3 @@ Picters Kernel extends the stock Android 16 kernel with proper support for exter
 ## Credits
 
 ReSukiSU / KernelSU · SUSFS · [aircrack-ng](https://github.com/aircrack-ng/rtl8812au) · [morrownr](https://github.com/morrownr) · AnyKernel3 (osm0sis) · [YuzakiKokuban](https://github.com/YuzakiKokuban) for the build tooling.
-
-# Telegram: [PicKernel](https://t.me/PicKernel)
