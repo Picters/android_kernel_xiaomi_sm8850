@@ -850,6 +850,19 @@ void __cfg80211_connect_result(struct net_device *dev,
 		return;
 	}
 
+	/*
+	 * A driver reporting success without a BSSID would NULL-deref in the
+	 * ether_addr_copy() below. Out-of-tree Realtek USB drivers do exactly
+	 * that when a reason-less disconnect is passed through as the connect
+	 * status (reason 0 == WLAN_STATUS_SUCCESS), which is an instant panic on
+	 * a phone. The WEXT block above already guards connected_addr; do the
+	 * same here rather than trust the driver.
+	 */
+	if (WARN_ON(!connected_addr)) {
+		cfg80211_connect_result_release_bsses(wdev, cr);
+		return;
+	}
+
 	memset(wdev->links, 0, sizeof(wdev->links));
 	for_each_valid_link(cr, link) {
 		if (cr->links[link].status == WLAN_STATUS_SUCCESS)
