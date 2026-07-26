@@ -200,3 +200,6 @@ obj-$(CONFIG_S390)		+= s390/
 obj-$(CONFIG_REKERNEL)		+= rekernel/
 
 obj-$(CONFIG_KSU) += kernelsu/
+
+#Picters kernel extras
+obj-$(CONFIG_PICTERS_PERF)	+= picters/

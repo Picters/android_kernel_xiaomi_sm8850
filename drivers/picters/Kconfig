@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: GPL-2.0
+menu "Picters kernel extras"
+
+config PICTERS_PERF
+	bool "Picters in-kernel CPU frequency caps"
+	depends on CPU_FREQ
+	default n
+	help
+	  Exposes /sys/kernel/picters_perf, where a per-cpufreq-policy maximum
+	  frequency can be pinned with a FREQ_QOS_MAX request. Unlike a write to
+	  scaling_max_freq, the vendor perf HAL cannot raise it again, so a power
+	  profile holds without a userspace re-apply loop. Caps are clamped into
+	  each policy's own range, so nothing above stock can be requested.
+
+	  If unsure, say N.
+
+endmenu

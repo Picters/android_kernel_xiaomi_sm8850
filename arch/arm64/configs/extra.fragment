@@ -244,3 +244,11 @@ CONFIG_NFSD_V4=y
 CONFIG_NTFS3_FS=m
 CONFIG_NTFS3_LZX_XPRESS=y
 CONFIG_NTFS3_FS_POSIX_ACL=y
+
+# --- Picters in-kernel performance caps --------------------------------------
+# /sys/kernel/picters_perf pins a per-cpufreq-policy FREQ_QOS_MAX request, which
+# the vendor perf HAL cannot raise back — so the app's power profiles hold
+# without the module's re-apply loop fighting perfd. KMI-safe: a self-contained
+# builtin that exports nothing and touches no frozen struct (adds only its own
+# symbols to vmlinux, same class as the NFS builtin above).
+CONFIG_PICTERS_PERF=y
