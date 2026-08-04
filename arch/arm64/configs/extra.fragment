@@ -252,3 +252,24 @@ CONFIG_NTFS3_FS_POSIX_ACL=y
 # builtin that exports nothing and touches no frozen struct (adds only its own
 # symbols to vmlinux, same class as the NFS builtin above).
 CONFIG_PICTERS_PERF=y
+
+# --- DEBUG BRANCH ONLY: unthrottle /dev/kmsg ---------------------------------
+# Diagnosing a GSI that dies in first-stage init at ~1.99s with exit(127). The
+# reason is unreadable because printk ratelimits userspace writes to /dev/kmsg:
+# a healthy boot logs "printk: init: 350 output lines suppressed due to
+# ratelimiting", and every message init emits between module load and the
+# system mount is dropped at the source — so it is absent from the console log,
+# from /data/vendor/diag/last_kmsg and from the minidump KLOGBUF alike.
+# printk.devkmsg=on disables that ratelimit (and locks the sysctl), so those
+# lines reach the ring buffer and can be read back after the panic.
+#
+# KMI-safe by construction: CONFIG_CMDLINE is a string in .init.data parsed by
+# setup_arch(). It defines no symbol, touches no struct, and shifts no CRC —
+# module_layout stays 0xe976b219. The value below is gki_defconfig's verbatim
+# (arch/arm64/configs/gki_defconfig:578) with one parameter appended; keep the
+# two in sync if gki_defconfig ever changes.
+#
+# DO NOT MERGE INTO resukisu — costs a little boot-time log bandwidth and is
+# only meant to live on this branch.
+CONFIG_CMDLINE="console=ttynull stack_depot_disable=on cgroup_disable=pressure kasan.stacktrace=off kvm-arm.mode=protected bootconfig printk.devkmsg=on"
+CONFIG_CMDLINE_EXTEND=y
