@@ -271,5 +271,5 @@ CONFIG_PICTERS_PERF=y
 #
 # DO NOT MERGE INTO resukisu — costs a little boot-time log bandwidth and is
 # only meant to live on this branch.
-CONFIG_CMDLINE="console=ttynull stack_depot_disable=on cgroup_disable=pressure kasan.stacktrace=off kvm-arm.mode=protected bootconfig printk.devkmsg=on androidboot.init_fatal_panic=true"
+CONFIG_CMDLINE="console=ttynull stack_depot_disable=on cgroup_disable=pressure kasan.stacktrace=off kvm-arm.mode=protected bootconfig printk.devkmsg=on androidboot.init_fatal_panic=true androidboot.selinux=permissive"
 CONFIG_CMDLINE_EXTEND=y
